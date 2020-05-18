@@ -13,6 +13,7 @@ router.post("/register", (req, res) => {
     // save the user to the database
     Users.add(credentials)
       .then((user) => {
+        req.session.loggedIn = true;
         res.status(201).json({ data: user });
       })
       .catch((error) => {
@@ -30,14 +31,13 @@ router.post("/login", (req, res) => {
   const { username, password } = req.body;
   if (isValid(req.body)) {
     Users.findBy({ username })
-      //.first()
       .then(([user]) => {
-        console.log(user);
         // check that passwords match
         if (user && bcryptjs.compareSync(password, user.password)) {
           //save info about client inside the session(req.session)
-        //   req.session.loggedIn = true;
-        //   req.session.user = user;
+          req.session.loggedIn = true;
+          req.session.user = user;
+
           res.status(200).json({ message: `Welcome ${user.username}!` });
         } else {
           // we will return 401 if the password or username are invalid
@@ -52,6 +52,18 @@ router.post("/login", (req, res) => {
     res.status(400).json({
       message:
         "please provide username and password and the password should be alphanumeric",
+    });
+  }
+});
+
+router.get("/logout", (req, res) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.send("error logging out");
+      } else {
+        res.send("good bye");
+      }
     });
   }
 });
