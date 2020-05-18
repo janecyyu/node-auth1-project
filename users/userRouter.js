@@ -12,8 +12,9 @@ function restricted(req, res, next) {
     res.status(401).json({ you: "can not pass!" });
   }
 }
+router.use(restricted);
 
-router.get("/users", restricted, (req, res) => {
+router.get("/", (req, res) => {
   Users.find()
     .then((users) => {
       res.json(users);
