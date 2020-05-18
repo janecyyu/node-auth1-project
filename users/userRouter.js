@@ -12,7 +12,7 @@ function restricted(req, res, next) {
 
 //router.use(restricted);
 
-router.get("/", (req, res) => {
+router.get("/users", (req, res) => {
   Users.find()
     .then((users) => {
       res.json(users);
