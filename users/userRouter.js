@@ -3,8 +3,6 @@ const router = require("express").Router();
 const Users = require("./userModel");
 
 function restricted(req, res, next) {
-  console.log(req.session);
-
   if (req.session && req.session.loggedIn) {
     next();
   } else {
